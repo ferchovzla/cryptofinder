@@ -34,6 +34,7 @@ class API_TRADING():
                  dat["name"] = i["name"]
                  dat["last_updated"] = i["last_updated"]
                  dat["price"] ="{:.13f}".format(i["quote"]["USD"]["price"])
+                 dat["percent_change_1h"] = "{:.3f}".format(i["quote"]["USD"]["percent_change_1h"])
                  return json.dumps(dat)
              
       except (ConnectionError, Timeout, TooManyRedirects) as e:

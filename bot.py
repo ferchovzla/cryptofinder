@@ -149,6 +149,13 @@ async def feg(update, context):
     await print_message(update, value)
     #update.message.reply_text(value)
 
+async def crypto(update, context):
+    """Send a message when the command /feg is issued."""
+    api_trading = API_TRADING(context.args[0].strip())
+    value = json.loads(api_trading.trading())
+    await print_message(update, value)
+    #update.message.reply_text(value)
+
 # Otras funciones de los comandos (doge, eth, etc.) pueden seguir la misma estructura
 
 async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -159,8 +166,13 @@ async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def print_message(update: Update, value):
     date = datetime.fromisoformat(value["last_updated"][:-1])
     date = date.strftime("%d-%m-%Y %H:%M:%S")
+    variation = float(value["percent_change_1h"])
+    if variation > 0:
+        icon = "🟢"
+    else:
+        icon = "🔴"
     await update.message.reply_text(
-        f'El precio de {value["name"]} (#{value["symbol"]}) es: ${value["price"]}\nFecha: {date}'
+        f'El precio de {value["name"]} (#{value["symbol"]}) es: ${value["price"]} {abs(variation)}% {icon}\nFecha: {date}'
     )
 
 # Función principal
@@ -183,6 +195,7 @@ def main():
     application.add_handler(CommandHandler("fomobaby", fomobaby))
     application.add_handler(CommandHandler("feg", feg))
     application.add_handler(CommandHandler("pit_market", pit_scraper))
+    application.add_handler(CommandHandler("crypto", crypto))
 
 
     # Registrar mensajes no comandos
